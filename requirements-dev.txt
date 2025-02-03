@@ -4,3 +4,5 @@ pytest
 pytest-cov
 pre-commit
 tensorboard
+roboflow
+
