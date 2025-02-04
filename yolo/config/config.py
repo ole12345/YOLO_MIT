@@ -155,6 +155,7 @@ class Config:
     lucky_number: 10
     use_wandb: bool
     use_tensorboard: bool
+    resume: bool
 
     weight: Optional[str]
 

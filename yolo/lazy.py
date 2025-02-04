@@ -29,10 +29,10 @@ def main(cfg: Config):
         enable_progress_bar=not getattr(cfg, "quite", False),
         default_root_dir=save_path,
     )
-
+    
     if cfg.task.task == "train":
         model = TrainModel(cfg)
-        trainer.fit(model)
+        trainer.fit(model,chkpath="last" if cfg.resume else None)
     if cfg.task.task == "validation":
         model = ValidateModel(cfg)
         trainer.validate(model)
