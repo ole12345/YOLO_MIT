@@ -1,3 +1,4 @@
+import random
 from typing import List
 
 import numpy as np
@@ -46,6 +47,9 @@ class RemoveOutliers:
             PIL.Image: The input image (unchanged).
             torch.Tensor: Filtered bounding boxes.
         """
+        boxes[:, [1, 3]] = boxes[:, [1, 3]].clamp(0, 1)
+        boxes[:, [2, 4]] = boxes[:, [2, 4]].clamp(0, 1)
+
         box_areas = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 4] - boxes[:, 2])
 
         valid_boxes = (box_areas > self.min_box_area) & (boxes[:, 3] > boxes[:, 1]) & (boxes[:, 4] > boxes[:, 2])
@@ -154,7 +158,7 @@ class Mosaic:
 class MixUp:
     """Applies the MixUp augmentation to a pair of images and their corresponding boxes."""
 
-    def __init__(self, prob=0.5, alpha=1.0):
+    def __init__(self, prob=0.5, alpha=32.0):
         self.alpha = alpha
         self.prob = prob
         self.parent = None
@@ -214,3 +218,28 @@ class RandomCrop:
             boxes[:, [2, 4]] /= crop_height
 
         return image, boxes
+
+
+class RandomResizeCrop:
+    def __init__(self, scale_range: float = 0.9, background_color=(114, 114, 114)):
+        self.scale_range = scale_range
+        self.background_color = background_color
+
+    def __call__(self, image: Image, boxes):
+        width, height = image.size
+        resize_image = Image.new("RGB", (width, height), self.background_color)
+
+        scale = random.uniform(1 - self.scale_range, 1 + self.scale_range)
+
+        scale_width, scale_height = int(width * scale), int(height * scale)
+        image = image.resize((scale_width, scale_height), Image.Resampling.LANCZOS)
+
+        pad_left = width // 2 + random.randint(-scale_width // 2, (width - scale_width) // 2)
+        pad_top = height // 2 + random.randint(-scale_height // 2, (height - scale_height) // 2)
+
+        resize_image.paste(image, (pad_left, pad_top))
+
+        boxes[:, 1:] *= scale
+        boxes[:, [1, 3]] += pad_left / width
+        boxes[:, [2, 4]] += pad_top / height
+        return resize_image, boxes
