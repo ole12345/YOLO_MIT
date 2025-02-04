@@ -32,7 +32,7 @@ def main(cfg: Config):
     
     if cfg.task.task == "train":
         model = TrainModel(cfg)
-        trainer.fit(model,chkpath="last" if cfg.resume else None)
+        trainer.fit(model,ckpt_path="last" if cfg.resume else None)
     if cfg.task.task == "validation":
         model = ValidateModel(cfg)
         trainer.validate(model)
