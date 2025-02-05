@@ -13,4 +13,4 @@ test: test
 train: train
 path: data/football-players-detection-3zvbc
 validation: valid
-class_num: 4
+class_num: 5
