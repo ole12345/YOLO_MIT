@@ -31,8 +31,11 @@ def main(cfg: Config):
     )
     
     if cfg.task.task == "train":
-        model = TrainModel(cfg)
-        trainer.fit(model,ckpt_path="last" if cfg.resume else None)
+        if len(cfg.resume)>0:
+            model = TrainModel.load_from_checkpoint(cfg.resume, cfg=cfg)
+        else:
+            model = TrainModel(cfg)
+        trainer.fit(model)
     if cfg.task.task == "validation":
         model = ValidateModel(cfg)
         trainer.validate(model)
