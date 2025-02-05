@@ -3,7 +3,7 @@ hydra:
     dir: runs
 
 name: v9-dev
-resume: false
+resume:  ""
 defaults:
   - _self_
   - task: inference

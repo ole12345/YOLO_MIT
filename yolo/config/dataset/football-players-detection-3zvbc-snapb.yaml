@@ -1,6 +1,6 @@
 test: test
 train: train
-path: data/football-players-detection-3zvbc
+path: data/football-players-detection-3zvbc-snapb
 validation: valid
 class_num: 4
 class_list: ["ball", "goalkeeper", "player", "referee"]
